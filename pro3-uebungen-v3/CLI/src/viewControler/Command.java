@@ -5,19 +5,19 @@ public class Command {
     public Command (String text) {
         String input = text.substring(0,2);
         switch (input) {
-            case ":1":
+            case ":c":
                 this.operator=Operator.INSERT;
                 break;
-            case ":2":
+            case ":d":
                 this.operator= Operator.REMOVE;
                 break;
-            case ":3":
+            case ":r":
                 this.operator=Operator.READ;
                 break;
-            case ":4":
+            case ":u":
                 this.operator=Operator.changeAccessCount;
                 break;
-            case ":5":
+            case ":e":
                 this.operator=Operator.QUIT;
                 break;
             default:
