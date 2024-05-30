@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/CLI/CLI.iml" filepath="$PROJECT_DIR$/CLI/CLI.iml" />
       <module fileurl="file://$PROJECT_DIR$/DomainLogic/DomainLogic.iml" filepath="$PROJECT_DIR$/DomainLogic/DomainLogic.iml" />
       <module fileurl="file://$PROJECT_DIR$/GUI/GUI.iml" filepath="$PROJECT_DIR$/GUI/GUI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Simulation/Simulation.iml" filepath="$PROJECT_DIR$/Simulation/Simulation.iml" />
       <module fileurl="file://$PROJECT_DIR$/contract/contract.iml" filepath="$PROJECT_DIR$/contract/contract.iml" />
       <module fileurl="file://$PROJECT_DIR$/pro3-uebungen-v3.iml" filepath="$PROJECT_DIR$/pro3-uebungen-v3.iml" />
     </modules>
