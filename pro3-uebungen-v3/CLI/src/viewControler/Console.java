@@ -11,41 +11,40 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Handler;
 
 public class Console {
-    private static AudioManagerImpl audioManager;
-    private static Scanner scanner = new Scanner(System.in);
+    private AudioManagerImpl audioManager;
+    private final Scanner scanner = new Scanner(System.in);
     private static Operator currentCase;
-    private static List<Handler> handlerList = new ArrayList<>();
-
 
     public void initialize() {
         List<Tag> tags = new ArrayList<>();
-        Uploader uploader1 = new MediaImpl.Uploader("Produzent1") {
-        };
+        Uploader uploader1 = new MediaImpl.Uploader("Produzent1");
         Uploader uploader2 = new MediaImpl.Uploader("Produzent2");
-        HashMap<String, Uploader> producers = new HashMap<>();
-        producers.put(uploader1.getName(), uploader1);
-        producers.put(uploader2.getName(), uploader2);
-
         ArrayList<MediaImpl.Audio> mediaList = new ArrayList<>();
-        mediaList.add(new MediaImpl.Audio(tags, 0, "address1", 500, uploader1, Duration.ofMinutes(3), BigDecimal.valueOf(9.99)));
-        mediaList.add(new MediaImpl.Audio(tags, 0, "address2", 700, uploader2, Duration.ofMinutes(4), BigDecimal.valueOf(14.99)));
+        Audio audio1 = new MediaImpl.Audio(tags, 0, "address1", 500, uploader1, Duration.ofMinutes(3), BigDecimal.valueOf(9.99));
+        Audio audio2 = new MediaImpl.Audio(tags, 0, "address2", 700, uploader2, Duration.ofMinutes(4), BigDecimal.valueOf(14.99));
+        mediaList.add(audio1);
+        mediaList.add(audio2);
 
+        HashMap<String, Uploader> producers = new HashMap<>();
+        producers.put("upl1", uploader1);
+        producers.put("upl2", uploader2);
         audioManager = new MediaManager.AudioManagerImpl(mediaList, producers, 2000);
     }
-public void showMenu(){
-    System.out.println("Please enter desired command to execute the program:");
-    System.out.println(":c switch to INSERTION mode");
-    System.out.println(":d switch to DELETE mode");
-    System.out.println(":r switch to DISPLAY mode");
-    System.out.println(":u switch to UPDATE mode");
-    System.out.println(":e to quit the program");
-    System.out.println("\nEnter command here: ");
-}
-public void execute() {
-while (true) { showMenu();
+
+    public void showMenu() {
+        System.out.println("Please enter the desired command to execute the program:");
+        System.out.println(":c switch to INSERTION mode");
+        System.out.println(":d switch to DELETE mode");
+        System.out.println(":r switch to DISPLAY mode");
+        System.out.println(":u switch to UPDATE mode");
+        System.out.println(":e to quit the program");
+        System.out.println("\nEnter command here: ");
+    }
+
+    public void execute() {
+        showMenu();
         try (Scanner s = new Scanner(System.in)) {
             while (true) {
                 try {
@@ -55,7 +54,7 @@ while (true) { showMenu();
                         switchCommand(input);
                     } else {
                         try {
-                            executeCommand(input);
+                            executeCommand();
                             execute();
                         } catch (Exception e) {
                             System.out.println("Wrong option");
@@ -65,11 +64,10 @@ while (true) { showMenu();
                     System.out.println("Invalid command! Please enter a valid command.");
                 }
             }
-            }
         }
     }
 
-    private void executeCommand(String input) throws Exception {
+    private void executeCommand() throws Exception {
         switch (currentCase) {
             case INSERT:
                 insertAudio();
@@ -121,9 +119,9 @@ while (true) { showMenu();
     }
 
     private void insertAudio() {
-        System.out.println("Mediadatei-Title:");
+        System.out.println("Media file title:");
         String title = scanner.nextLine();
-        System.out.println("Uploader-Name:");
+        System.out.println("Uploader name:");
         String uploaderName = scanner.nextLine();
         System.out.println("Size:");
         long size = Long.parseLong(scanner.nextLine());
@@ -131,46 +129,42 @@ while (true) { showMenu();
         long durationSeconds = Long.parseLong(scanner.nextLine());
 
         Uploader uploader = new MediaImpl.Uploader(uploaderName);
-        if (uploader == null) {
-            System.out.println("Uploader existiert nicht.");
-            return;
-        }
 
         Audio newAudio = new MediaImpl.Audio(new ArrayList<>(), 0, title, size, uploader, Duration.ofSeconds(durationSeconds), BigDecimal.ZERO);
         try {
             audioManager.insert(newAudio);
-            System.out.println("Mediadatei erfolgreich hinzugefügt.");
+            System.out.println("Media file successfully added.");
         } catch (Exception e) {
-            System.out.println("Fehler beim Hinzufügen der Mediendatei: " + e.getMessage());
+            System.out.println("Error adding media file: " + e.getMessage());
         }
     }
 
     private void displayAudio() {
-        System.out.println("Alle Mediendateien:");
+        System.out.println("All media files:");
         System.out.println(audioManager.read());
     }
 
     private void changeAccessCount() {
-        System.out.println("Mediadatei-Title:");
+        System.out.println("Media file title:");
         String title = scanner.nextLine();
-        MediaImpl.Audio accessCount = audioManager.getMediaList().stream().filter(audio -> audio.getAddress().equals(title)).findAny().orElse(null);
-        if (accessCount != null) {
-            accessCount.incrementAccessCount();
-            System.out.println("Mediadatei-Zugriffszähler wurde erfolgreich geändert.");
+        MediaImpl.Audio audio = audioManager.getMediaList().stream().filter(a -> a.getAddress().equals(title)).findAny().orElse(null);
+        if (audio != null) {
+            audio.incrementAccessCount();
+            System.out.println("Media file access count successfully updated.");
         } else {
-            System.out.println("Mediadatei existiert nicht.");
+            System.out.println("Media file does not exist.");
         }
     }
 
     private void delAudio() {
-        System.out.println("Mediadatei-Title:");
+        System.out.println("Media file title:");
         String title = scanner.nextLine();
         MediaImpl.Audio audio = audioManager.getMediaList().stream().filter(a -> a.getAddress().equals(title)).findAny().orElse(null);
         if (audio != null) {
             audioManager.remove(audio);
-            System.out.println("Mediadatei wurde erfolgreich gelöscht.");
+            System.out.println("Media file successfully deleted.");
         } else {
-            System.out.println("Mediadatei existiert nicht.");
+            System.out.println("Media file does not exist.");
         }
     }
 }

@@ -11,6 +11,6 @@ String producer;
 
     @Override
     public String getName() {
-        return "";
+        return this.producer;
     }
 }
